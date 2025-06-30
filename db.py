@@ -1,9 +1,6 @@
-from flask import Flask
 import sqlite3
 
 database = "todo.db"
-
-app = Flask(__name__)
 
 #Connection to the database
 def get_connection():
