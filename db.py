@@ -72,7 +72,3 @@ def init_db():
                 ('House Chores', 4),
                 ('Study', 5)
         """)
-
-if __name__ == "__main__":
-    init_db()
-    app.run(debug=True)
