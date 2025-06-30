@@ -1,10 +1,8 @@
 import sqlite3
 
-database = "todo.db"
-
 #Connection to the database
 def get_connection():
-    conn = sqlite3.connect(database)
+    conn = sqlite3.connect("todo.db")
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON;")
     return conn
@@ -48,7 +46,8 @@ def init_db():
                 description TEXT,
                 due_date DATE,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+                FOREIGN KEY (user_id) REFERENCES user(user_id) 
+                ON DELETE CASCADE,
                 FOREIGN KEY (status_id) REFERENCES status(status_id),
                 FOREIGN KEY (tag_id) REFERENCES tag(tag_id)
             )
