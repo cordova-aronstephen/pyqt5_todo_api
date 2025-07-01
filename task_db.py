@@ -1,4 +1,3 @@
-from db import get_connection
 from db import fetch_one, fetch_all, execute_query
 
 TASK_TABLE = "task"
