@@ -71,3 +71,21 @@ def init_db():
                 ('House Chores', 4),
                 ('Study', 5)
         """)
+#Execute sql command that modifies data 
+def execute_query(query, params=()):
+    with get_connection() as conn:
+        conn.execute(query, params)
+        conn.commit()
+        
+#Execute a SQL query and return all rows as dictionaries
+def fetch_all(query, params=()):
+    with get_connection() as conn:
+        cursor = conn.execute(query, params)
+        rows = cursor.fetchall()
+    return [dict(row) for row in rows]
+
+#Execute a SQL query and return a single row as a dictionary
+def fetch_one(query, params=()):
+    with get_connection() as conn:
+        row = conn.execute(query, params).fetchone()
+    return dict(row) if row else None
