@@ -1,57 +1,50 @@
 from db import get_connection
+from db import fetch_one, fetch_all, execute_query
 
 TASK_TABLE = "task"
 
 def get_all_tasks():
-    with get_connection() as conn:
-        cursor = conn.execute(f"SELECT * FROM {TASK_TABLE}")
-        tasks = [dict(row) for row in cursor.fetchall()]
-    return tasks
+    query = f"SELECT * FROM {TASK_TABLE}"
+    return fetch_all(query)
 
 def get_task_id(task_id):
-    with get_connection() as conn:
-        row = conn.execute(
-            f"SELECT * FROM {TASK_TABLE} WHERE task_id = ?",
-            (task_id,)
-        ).fetchone()
-    return dict(row) if row else None
+    query = f"SELECT * FROM {TASK_TABLE} WHERE task_id = ?"
+    return fetch_one(query, (task_id,))
 
 def insert_task(data):
-    title = data['title']
-    description = data.get('description', '')
-    due_date = data.get('due_date')
-    status_id = data['status_id']
-    tag_id = data['tag_id']
-    user_id = data.get('user_id')
-
-    with get_connection() as conn:
-        conn.execute(f"""
+    params = (
+        data['title'],
+        data.get('description', ''),
+        data.get('due_date'),
+        data['status_id'],
+        data['tag_id'],
+        data.get('user_id')
+        )
+    query = f"""
             INSERT INTO {TASK_TABLE}
             (title, description, due_date, status_id, tag_id, user_id)
             VALUES (?, ?, ?, ?, ?, ?)
-        """, (title, description, due_date, status_id, tag_id, user_id))
-        conn.commit()
+        """
+    execute_query(query, params)
 
 def update_task_model(task_id, data):
-    title = data.get('title')
-    description = data.get('description', '')
-    due_date = data.get('due_date')
-    status_id = data.get('status_id')
-    tag_id = data.get('tag_id')
+    params = (
+        data.get('title'),
+        data.get('description', ''),
+        data.get('due_date'),
+        data.get('status_id'),
+        data.get('tag_id'),
+        task_id
+        )
 
-    with get_connection() as conn:
-        conn.execute(f"""
+    query = f"""
             UPDATE {TASK_TABLE}
             SET title = ?, description = ?, due_date = ?,
                 status_id = ?, tag_id = ?
             WHERE task_id = ?
-        """, (title, description, due_date, status_id, tag_id, task_id))
-        conn.commit()
+        """
+    execute_query(query, params)
 
 def delete_task_model(task_id):
-    with get_connection() as conn:
-        conn.execute(
-            f"DELETE FROM {TASK_TABLE} WHERE task_id = ?",
-            (task_id,)
-        )
-        conn.commit()        
+    query = f"DELETE FROM {TASK_TABLE} WHERE task_id = ?"
+    execute_query(query, (task_id,))     
