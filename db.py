@@ -39,7 +39,7 @@ def init_db():
         conn.execute("""
             CREATE TABLE IF NOT EXISTS task (
                 task_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER,
+                user_id INT NOT NULL,
                 status_id INT NOT NULL,
                 tag_id INT NOT NULL,
                 title TEXT NOT NULL,
