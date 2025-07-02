@@ -1,11 +1,13 @@
 from flask import Blueprint, request, jsonify
-from db import get_connection
 from task_db import (
     get_all_tasks,
     get_task_id,
     insert_task,
     update_task_model,
-    delete_task_model
+    delete_task_model,
+    status_exists, 
+    tag_exists, 
+    user_exists
 )
 
 todo_bp = Blueprint('todo', __name__)
@@ -14,28 +16,34 @@ HTTP_OK = 200
 HTTP_CREATED = 201
 HTTP_BAD_REQUEST = 400
 HTTP_NOT_FOUND = 404
-TASK_TABLE = 'task'
 
 @todo_bp.route('/tasks', methods=['GET'])
 def get_tasks():
-    task = get_all_tasks()
-    return jsonify(task), HTTP_OK
+    tasks = get_all_tasks()
+    return jsonify(tasks), HTTP_OK
 
 @todo_bp.route('/tasks/<int:id>', methods=['GET'])
 def get_task(id):
     task = get_task_id(id)
     if task is None:
         return jsonify({'error': 'Task not found'}), HTTP_NOT_FOUND
-
-    return jsonify(dict(task)), HTTP_OK
+    return jsonify(task), HTTP_OK
 
 @todo_bp.route('/tasks', methods=['POST'])
 def create_task():
     data = request.get_json()
-    required_fields = ['title', 'status_id', 'tag_id']
+    required_fields = ['title', 'status_id', 'tag_id', 'user_id']
     for field in required_fields:
         if not data.get(field):
             return jsonify({'error': f'{field} is required'}), HTTP_BAD_REQUEST
+
+    if not status_exists(data['status_id']):
+        return jsonify({'error': 'Invalid status_id'}), HTTP_BAD_REQUEST
+    if not tag_exists(data['tag_id']):
+        return jsonify({'error': 'Invalid tag_id'}), HTTP_BAD_REQUEST
+    if not user_exists(data['user_id']):
+        return jsonify({'error': 'Invalid user_id'}), HTTP_BAD_REQUEST
+
     insert_task(data)
     return jsonify({'message': 'Task created successfully'}), HTTP_CREATED
 
@@ -45,6 +53,12 @@ def update_task(id):
     task = get_task_id(id)
     if task is None:
         return jsonify({'error': 'Task not found'}), HTTP_NOT_FOUND
+
+    if data.get('status_id') and not status_exists(data['status_id']):
+        return jsonify({'error': 'Invalid status_id'}), HTTP_BAD_REQUEST
+    if data.get('tag_id') and not tag_exists(data['tag_id']):
+        return jsonify({'error': 'Invalid tag_id'}), HTTP_BAD_REQUEST
+
     update_task_model(id, data)
     return jsonify({'message': 'Task updated successfully'}), HTTP_OK
 
