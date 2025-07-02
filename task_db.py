@@ -47,3 +47,17 @@ def update_task_model(task_id, data):
 def delete_task_model(task_id):
     query = f"DELETE FROM {TASK_TABLE} WHERE task_id = ?"
     execute_query(query, (task_id,))     
+
+# Added helper
+
+def status_exists(status_id):
+    query = "SELECT 1 FROM status WHERE status_id = ?"
+    return fetch_one(query, (status_id,)) is not None
+
+def tag_exists(tag_id):
+    query = "SELECT 1 FROM tag WHERE tag_id = ?"
+    return fetch_one(query, (tag_id,)) is not None
+
+def user_exists(user_id):
+    query = "SELECT 1 FROM user WHERE user_id = ?"
+    return fetch_one(query, (user_id,)) is not None
