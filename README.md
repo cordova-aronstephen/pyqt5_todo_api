@@ -33,8 +33,17 @@ pip install -r requirements.txt
 ### 🕹️ How to run
 Placeholder for the contents of How to run.
 
-# API Endpoints
-Placeholder for the contents of API Endpoints
+### 📌 Task Endpoints (CRUD)
+
+| Method | Endpoint         | Description            |
+|--------|------------------|------------------------|
+| GET    | `/tasks`         | Get all tasks          |
+| GET    | `/tasks/<id>`    | Get a task by ID       |
+| POST   | `/tasks`         | Create a new task      |
+| PUT    | `/tasks/<id>`    | Update task by ID      |
+| DELETE | `/tasks/<id>`    | Delete task by ID      |
+
+> All endpoints return JSON and appropriate status codes (200, 201, 400, 404).
 
 ## Deployed link
 Placeholder for the Deployed link
