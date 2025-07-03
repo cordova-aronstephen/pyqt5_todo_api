@@ -12,6 +12,7 @@ from task_db import (
 
 todo_bp = Blueprint('todo', __name__)
 
+# HTTP status codes
 HTTP_OK = 200
 HTTP_CREATED = 201
 HTTP_BAD_REQUEST = 400
@@ -19,11 +20,20 @@ HTTP_NOT_FOUND = 404
 
 @todo_bp.route('/tasks', methods=['GET'])
 def get_tasks():
+    """
+    GET /tasks
+    Returns a list of all tasks.
+    """
     tasks = get_all_tasks()
     return jsonify(tasks), HTTP_OK
 
 @todo_bp.route('/tasks/<int:id>', methods=['GET'])
 def get_task(id):
+    """
+    GET /tasks/<id>
+    Returns a specific task by ID.
+    Returns 404 if not found.
+    """
     task = get_task_id(id)
     if task is None:
         return jsonify({'error': 'Task not found'}), HTTP_NOT_FOUND
@@ -31,6 +41,18 @@ def get_task(id):
 
 @todo_bp.route('/tasks', methods=['POST'])
 def create_task():
+    """
+    POST /tasks
+    Creates a new task. Requires:
+    - title
+    - status_id
+    - tag_id
+    - user_id
+
+    Returns:
+    - 201 on success
+    - 400 if required field or FK is missing/invalid
+    """
     data = request.get_json()
     required_fields = ['title', 'status_id', 'tag_id', 'user_id']
     for field in required_fields:
@@ -49,6 +71,17 @@ def create_task():
 
 @todo_bp.route('/tasks/<int:id>', methods=['PUT'])
 def update_task(id):
+    """
+    PUT /tasks/<id>
+    Updates an existing task.
+    Optional fields:
+    - title, description, due_date, status_id, tag_id
+
+    Returns:
+    - 200 on success
+    - 400 if invalid FK
+    - 404 if task not found
+    """
     data = request.get_json()
     task = get_task_id(id)
     if task is None:
@@ -64,6 +97,14 @@ def update_task(id):
 
 @todo_bp.route('/tasks/<int:id>', methods=['DELETE'])
 def delete_task(id):
+    """
+    DELETE /tasks/<id>
+    Deletes a task by ID.
+
+    Returns:
+    - 200 if successfully deleted
+    - 404 if not found
+    """
     task = get_task_id(id)
     if task is None:
         return jsonify({'error': 'Task not found'}), HTTP_NOT_FOUND
