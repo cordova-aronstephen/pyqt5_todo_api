@@ -11,9 +11,17 @@ def create_app():
     
     init_db()
     
+    @app.route("/")
+    def index():
+        return jsonify({
+        'message': 'Welcome! This TODO API is developed by Team PyQt5.'
+    })
+    
     @app.errorhandler(Exception)
     def handle_error(e):
-        return jsonify({'error': 'Internal Server Error'}), HTTP_INTERNAL_SERVER_ERROR
+        return jsonify({
+            'error': 'Internal Server Error'
+        }), HTTP_INTERNAL_SERVER_ERROR
     
     return app
 
