@@ -1,6 +1,8 @@
-from flask import Flask
+from flask import Flask, jsonify
 from routes import todo_bp
 from db import init_db
+
+HTTP_INTERNAL_SERVER_ERROR = 500
 
 def create_app():
     app = Flask(__name__)
@@ -9,8 +11,12 @@ def create_app():
     
     init_db()
     
+    @app.errorhandler(Exception)
+    def handle_error(e):
+        return jsonify({'error': 'Internal Server Error'}), HTTP_INTERNAL_SERVER_ERROR
+    
     return app
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=10000)
