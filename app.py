@@ -4,6 +4,7 @@ from db import init_db
 
 HTTP_INTERNAL_SERVER_ERROR = 500
 HTTP_NOT_FOUND = 404
+PORT = 10000
 
 def create_app():
     app = Flask(__name__)
@@ -33,4 +34,4 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=10000)
+    app.run(host='0.0.0.0', port=PORT)
