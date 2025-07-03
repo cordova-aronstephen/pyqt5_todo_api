@@ -3,7 +3,7 @@ from routes import todo_bp
 from db import init_db
 
 HTTP_INTERNAL_SERVER_ERROR = 500
-HTTP_NOT_FOUND = 400
+HTTP_NOT_FOUND = 404
 
 def create_app():
     app = Flask(__name__)
